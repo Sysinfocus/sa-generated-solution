@@ -8,7 +8,7 @@
         <CascadingValue Value="Errors" IsFixed>
             <div class="flex-col f1" style="margin-inline: -1.5rem; padding: 1.5rem; overflow: auto">
                 <Grid Class="aifs" MinColWidth="150px">
-                    <Input Id="focusElement" Label="Name" TItem="string" Class="mandatory" @bind-Value="@Model!.Name" Error="@nameof(Model.Name)" ContainerStyle="grid-column: span 2" />
+                    <Input Id="focusElement" Focus Label="Name" TItem="string" Class="mandatory" @bind-Value="@Model!.Name" Error="@nameof(Model.Name)" ContainerStyle="grid-column: span 2" />
                     <Textarea Label="Overview" Class ="mandatory" @bind-Text="@Model.Overview" Rows="10" Error="@nameof(Model.Overview)" Style="grid-column: span 2" />
                     <Group Label="Official Vendor" Error="@nameof(Model.OfficialVendor)"><Switch Label="@(Model.OfficialVendor ? "Yes" : "No")" Checked="@Model.OfficialVendor" OnClick="x => Model.OfficialVendor = x" /></Group>
 

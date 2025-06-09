@@ -1,5 +1,5 @@
-@page "/Features/MCPServers"
-@inherits BasePagedListing<PagedListing, MCPDto>
+@page "/Features/MCPServers-AlternateView"
+@inherits BasePagedListing<AlternativeView, MCPDto>
 
 <CascadingValue Value="Endpoints" IsFixed>
 <div class="flex-col g8" style="min-height:calc(100dvh - 50px)">
@@ -49,25 +49,30 @@
     <BusyAnimation Show="@IsBusy" />
 
     @if (Models is not null)
-    {        
-        <DataTable Items="@Models" TItem="MCPDto" Height=";height:calc(100dvh - 160px)" ShowVerticalBorder
-            OnDeleteKey="HandleConfirmDelete" OnDoubleClick="HandleEdit">
-            <DataColumns>
-                <DataTableColumn Freeze="0" Property="p => p.Id" Header="" Width="60px" HeaderStyle="justify-content:center">
-                    <Template>
-                        <div class="flex jcc aic g8">
-                            <Icon Name="edit" Size="14px" Tooltip="Update" Color="blue" OnClick="() => HandleEdit(context)" />
-                            <Icon Name="delete" Size="14px" Tooltip="Delete" Color="red" OnClick="() => HandleConfirmDelete(context)" />
+    {
+        <style>            
+            .mcp-servers .show-on-hover { opacity:0;transition:250ms ease-in-out }            
+            .mcp-servers:hover .show-on-hover,
+            .mcp-servers:active .show-on-hover { opacity:1;transition:250ms ease-in-out }
+        </style>
+        <Grid MinColWidth="300px" ColGap="1rem" Style="margin-top:0.5rem;height:calc(100dvh - 180px);overflow:auto;scrollbar-width:none">
+            @foreach(var model in Models)
+            {
+                <div class="flex-col jcfs aic mcp-servers" style="max-width:400px;background-color:var(--primary-bg);border:1px solid var(--primary-border);padding:1rem;border-radius:1rem">
+                    <div class="flex jcsb w100">
+                        <div class="flex g4 aic">
+                            <b>@model.Name</b>
+                            @if (model.OfficialVendor) { <Icon Name="verified" Color="orange" Size="18px" Tooltip="Official Vendor" /> }
                         </div>
-                    </Template>
-                </DataTableColumn>
-                <DataTableColumn Property="d => d.Name" Header="Name" Style="width: 250px" SortOn="@Sorting" OnSort="HandleSorting" />
-                <DataTableColumn Property="d => d.Overview" Header="Overview" SortOn="@Sorting" OnSort="HandleSorting" />
-                <DataTableColumn Property="d => d.OfficialVendor" Header="Official Vendor" Style="width: 100px" SortOn="@Sorting" OnSort="HandleSorting">
-                    <Template>@(context.OfficialVendor ? "Yes" : "No")</Template>
-                </DataTableColumn>
-            </DataColumns>
-        </DataTable>
+                        <div class="flex aic g8 show-on-hover">
+                            <Icon Name="edit" Size="18px" Color="blue" Tooltip="Update" OnClick="() => HandleEdit(model)" />
+                            <Icon Name="delete" Size="18px" Color="red" Tooltip="Delete" OnClick="() => HandleConfirmDelete(model)" />
+                        </div>
+                    </div>
+                    <small class="muted-color">@model.Overview</small>
+                </div>
+            }
+        </Grid>
 
         @* Paging for desktop *@
         <div class="desktop">

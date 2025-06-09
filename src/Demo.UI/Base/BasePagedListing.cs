@@ -19,7 +19,7 @@ public abstract class BasePagedListing<TPage, TModel> : ComponentBase
 
     private BaseEndpoints Initialize()
     {
-        Paging = new() { CurrentPage = 1, TotalRecords = 0, PageSize = 25 };
+        Paging = new() { CurrentPage = 1, TotalRecords = 0, PageSize = 15 };
         Sorting = new() { Header = " ", IsAscending = true };
         return new BaseEndpoints()
         {
