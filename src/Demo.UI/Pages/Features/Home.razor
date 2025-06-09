@@ -1,0 +1,20 @@
+@page "/Home"
+
+<PageTitle>Home - Demo</PageTitle>
+
+<div class="flex-col g4 mb1">
+    <h3>Home</h3>
+    <p class="muted">Welcome to Demo. You are authorized to use now.</p>
+</div>
+<div class="flex wrap">
+    @foreach(var feature in features)
+    {
+        <Button Text="@feature" OnClick="@(_ => browserExtensions.Goto($"Features/{feature}"))" />
+    }
+</div>
+
+@code {
+    string[] features = [        
+        // New Features
+    ];
+}

@@ -1,0 +1,73 @@
+@inherits LayoutComponentBase
+@inject NavigationManager navigationManager
+@inject AuthenticationStateProvider asp
+@attribute [Authorize]
+
+<div class="flex jcsb mb05" style="background-color: #333;color:white">
+    <div class="flex jcsb aic w100" style="max-width:1400px;margin:auto;padding:0.5rem 1rem">
+        <h4><a href="/Home">Demo</a></h4>
+        <div class="flex aic">
+            <Icon Name="@(initialization.CurrentTheme == "light" ? "dark_mode" : "light_mode")" Size="18px"
+                Color="white" Tooltip="Toggle Theme" OnClick="initialization.ToggleTheme" />
+            <AuthorizeView>
+                <Authorized>
+                    <Icon Name="logout" Size="18px" Color="white" Tooltip="Logout" OnClick="HandleLogout" />
+                </Authorized>                        
+            </AuthorizeView>
+        </div>
+    </div>
+</div>
+<div class="container" @onclick="initialization.HandleMainLayoutClickEvent">    
+    @Body
+</div>
+
+@code
+{
+    private AuthenticationState? authenticationState;
+
+    protected override async Task OnInitializedAsync()
+    {
+        navigationManager.LocationChanged += (s, a) => HandleLocationChanged(s,a);
+        await CheckAuthentication();
+    }
+
+    private async void HandleLocationChanged(object? sender, LocationChangedEventArgs args) => await CheckAuthentication();
+
+    private async Task CheckAuthentication()
+    {        
+        var path = GetUrlPath();
+        var login = string.IsNullOrEmpty(path) || path == "login" || path == "register";
+        authenticationState = await((ApplicationStateProvider)asp).GetAuthenticationStateAsync();
+
+        var auth = authenticationState?.User?.Identity?.IsAuthenticated;
+        if (auth == true && login == true) browserExtensions.Goto("Home");
+        else if (auth == false && login == false) browserExtensions.Goto("/");
+    }
+
+    private string GetUrlPath()
+    {
+        var baseUrl = browserExtensions.GetBaseUrl();
+        return browserExtensions.GetUrl().Replace(baseUrl, "").Trim().ToLower();
+    }
+
+    private void NavigateToLogin()
+    {
+        var path = GetUrlPath();
+        if (string.IsNullOrEmpty(path) || path != "login" || path != "register") browserExtensions.Goto("/");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await initialization.InitializeTheme();
+            await initialization.PreloadJSAndCSSDependencies();
+        }
+    }
+
+    private async Task HandleLogout()
+    {
+        await ((ApplicationStateProvider)asp).Logout();
+        browserExtensions.Goto("/");
+    }
+}

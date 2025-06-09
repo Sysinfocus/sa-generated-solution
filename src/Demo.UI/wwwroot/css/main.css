@@ -1,0 +1,66 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box
+}
+
+.light {
+    color-scheme: light;
+}
+
+.dark {
+    color-scheme: dark;
+}
+
+a {
+    align-self: flex-start;
+    outline: none;
+    text-decoration: none;
+    color: orangered
+}
+
+.container {
+    max-width: 1400px;
+    margin: auto;
+    padding: 0 1rem
+}
+
+.hide {
+    display: none
+}
+
+.sbc-input label, .sbc-textarea label, .sbc-select label, .sbc-group label {
+    --error: var(--primary-fg) !important
+}
+
+.sbc-input p, .sbc-textarea p, .sbc-select p, .sbc-group p {
+    font-size: 0.75rem !important
+}
+
+.mandatory input,
+.mandatory textarea,
+.sbc-datepicker.mandatory, .sbc-select.mandatory button {
+    border-bottom: 1px solid var(--btn-primary-bg) !important;
+    border-radius: 6px
+}
+
+
+@media screen and (max-width: 800px) {
+    .mobile {
+        display: none
+    }
+
+    .desktop {
+        display: unset
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .mobile {
+        display: unset
+    }
+
+    .desktop {
+        display: none
+    }
+}

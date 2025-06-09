@@ -1,0 +1,33 @@
+@HostAddress = http://localhost:5215/api/v1/Auth
+@Authorization = Bearer 
+
+###
+POST {{HostAddress}}/register
+Content-type: application/json
+
+{
+    "email": "",
+    "password": ""
+}
+
+###
+POST {{HostAddress}}/login
+Content-type: application/json
+
+{
+    "email": "",
+    "password": ""
+}
+
+###
+POST {{HostAddress}}/refresh
+Content-type: application/json
+Authorization: {{Authorization}}
+
+{
+    "refreshToken": ""
+}
+
+###
+GET {{HostAddress}}/manage/info
+Authorization: {{Authorization}}

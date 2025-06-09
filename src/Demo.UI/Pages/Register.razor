@@ -1,0 +1,85 @@
+@page "/Register"
+@inject AuthenticationStateProvider asp
+@inject ApiService ApiService
+
+<PageTitle>Register - Demo</PageTitle>
+
+<style>
+    .register {        
+        max-width: 400px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1.5rem;
+        border-radius: 1rem;        
+        box-shadow: 0 0 4px 4px #0001;
+        background-color:var(--primary-bg);
+        position:relative;
+        overflow:hidden;
+    }
+    .bird {
+        position: absolute;
+        right:0;
+        top: 0;
+    }
+</style>
+
+<div class="flex jcc aic" style="height:calc(100dvh - 50px)">
+    <div class="register">
+        <img width="100" height="100" class="bird" src="icon-192.png" alt="Company Logo" />
+        <div class="flex-col g8 mb1">
+            <h3>Register Account</h3>
+            <p class="muted">Enter your valid credentials.</p>
+        </div>
+        <div class="flex-col w100">
+            <CascadingValue Value="@errors" IsFixed>
+
+                <Input Label="Email" Type="email" Class="mandatory" Focus @bind-Value="@model.Email"
+                    Error="@(nameof(model.Email))" />
+
+                <Input Label="Password" Type="password" Class="mandatory" @bind-Value="@model.Password"
+                    Error="@(nameof(model.Password))"/>
+
+                <Input Label="Confirm Password" Type="password" Class="mandatory" @bind-Value="@model.ConfirmPassword"
+                       Error="@(nameof(model.ConfirmPassword))" />
+
+            </CascadingValue>
+        </div>
+        <p class="error">@errorMessage</p>
+        <div class="flex g8 mtb1">
+            <Button Text="Register" OnClick="HandleRegister" />
+        </div>
+        <p>Already have an account? <a href=".">Login here</a></p>
+    </div>
+</div>
+
+@code
+{
+    private RegisterRequestDto model = new();
+    private Dictionary<string, string>? errors;
+    private string? errorMessage;
+
+    private async Task HandleRegister()
+    {
+        errorMessage = null;
+
+        errors = model.Errors();
+        if (!model.IsValid) return;
+
+        await browserExtensions.RemoveFromLocalStorage("user");
+        var response = await ApiService.Post<RegisterRequestDto, string>("/api/v1/Auth/register", model);
+        if (response.IsSuccess)
+        {            
+            browserExtensions.Goto("Login");
+        }
+        else
+        {
+            errorMessage = response.StatusCode switch
+            {
+                System.Net.HttpStatusCode.Forbidden => "Your account may be locked. Check with admin.",
+                _ => "Bad request for registration.",
+            };
+        }
+    }
+}
