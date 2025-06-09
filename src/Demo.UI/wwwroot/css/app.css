@@ -42,12 +42,11 @@
     }
 
 .loading-progress {
-    position: absolute;
+    position: relative;
     display: block;
     width: 8rem;
     height: 8rem;
-    inset: 20vh 0 auto 0;
-    margin: 0 auto 0 auto;
+    margin: 20vh auto 1rem auto;
 }
 
     .loading-progress circle {

@@ -1,0 +1,154 @@
+@page "/Features/MCPServers/List"
+@inherits BaseListing<Listing, MCPDto>
+
+<CascadingValue Value="Endpoints" IsFixed>
+    <div class="flex-col g8" style="min-height:calc(100dvh - 50px)">
+        <div class="flex g0 jcsb aic">
+            @if (!ShowSearchBox)
+            {
+                <div class="flex g8 aifs">
+                    <Button Icon="arrow_back" Class="rounded" Style="padding:8px" OnClick="@(() => browserExtensions.Goto("Home"))" />
+                    <div class="flex-col g0">
+                        <h3>@Title</h3>
+                        <small class="muted-color">@Description</small>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <Button Icon="arrow_back" Class="rounded" Type="ButtonType.Ghost" Style="padding:8px"
+                        OnClick="() => ShowSearchBox = false" />
+            }
+
+            <div class="flex g8">
+                @* Search for desktop *@
+                <div class="flex g8 @(ShowSearchBox ? "" : "desktop")" style="max-width: 300px; width: 100%">
+                    <Input Id="searchBox" AccessKey="s" Placeholder="Search ..." ChangeOnInput="false"
+                           @bind-Value="@SearchFor" @bind-Value:after="HandleSearch"
+                           Type="search" Style="width: 100%" OnBlur="() => ShowSearchBox = false" />
+                </div>
+                <div class="desktop">
+                    <Button AccessKey="=" Icon="add" Text="New" Type="ButtonType.Secondary" Style="padding-left: 8px"
+                            OnClick="HandleAddNew" />
+                </div>
+
+                @* Search for mobile *@
+                <div class="mobile">
+                    <div class="flex g8">
+                        @if (!ShowSearchBox)
+                        {
+                            <Button Icon="search" Style="padding:8px" OnClick="HandleShowSearchBox"
+                                    Type="@(string.IsNullOrWhiteSpace(SearchFor) ? ButtonType.Secondary : ButtonType.Warning)" />
+                        }
+                        <Button Icon="add" Type="ButtonType.Secondary" Style="padding:8px" OnClick="HandleAddNew" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <BusyAnimation Show="@IsBusy" />
+
+        @if (Models is not null)
+        {
+            <DataTable Items="@Models" TItem="MCPDto" Height=";height:calc(100dvh - 160px)" ShowVerticalBorder
+                       OnDeleteKey="HandleConfirmDelete" OnDoubleClick="HandleEdit">
+                <DataColumns>
+                    <DataTableColumn Freeze="0" Property="p => p.Id" Header="" Width="60px" HeaderStyle="justify-content:center">
+                        <Template>
+                            <div class="flex jcc aic g8">
+                                <Icon Name="edit" Size="14px" Tooltip="Update" Color="blue" OnClick="() => HandleEdit(context)" />
+                                <Icon Name="delete" Size="14px" Tooltip="Delete" Color="red" OnClick="() => HandleConfirmDelete(context)" />
+                            </div>
+                        </Template>
+                    </DataTableColumn>
+                    <DataTableColumn Property="d => d.Name" Header="Name" Style="width: 150px" SortOn="@Sorting" OnSort="HandleSorting" />
+                    <DataTableColumn Property="d => d.Overview" Header="Overview" SortOn="@Sorting" OnSort="HandleSorting" />
+                    <DataTableColumn Property="d => d.OfficialVendor" Header="Official Vendor" Style="width: 100px" SortOn="@Sorting" OnSort="HandleSorting">
+                      <Template><Switch Checked="@context.OfficialVendor" Disabled /></Template>
+                    </DataTableColumn>
+                </DataColumns>
+            </DataTable>
+
+            @* Paging for desktop *@
+            <div class="desktop">
+                <div class="flex jcsb aic g8">
+                    <p class="muted">@Paging.PagingDetails(SearchFor)</p>
+                    <Pagination State="Paging" ActiveType="ButtonType.Primary" OnPageChange="HandlePaging"
+                                PreviousText=" " NextText=" " ShowFirstLast />
+                </div>
+            </div>
+
+            @* Paging for mobile *@
+            <div class="mobile">
+                <div class="flex-col jcc aic g8">
+                    <p class="muted ta-center">@Paging.PagingDetails(SearchFor)</p>
+                    <Pagination State="Paging" ActiveType="ButtonType.Primary" OnPageChange="HandlePaging"
+                                PreviousText=" " NextText=" " ShowFirstLast Size="ButtonSize.Small" />
+                </div>
+            </div>
+        }
+
+        @if (IsAdding)
+        {
+            <Add OnClose="HandleCloseAndRefresh" />
+        }
+        else if (IsEditing && ActiveModel is not null)
+        {
+            <Update Id="ActiveModel.Id" OnClose="HandleCloseAndRefresh" />
+        }
+
+    </div>
+</CascadingValue>
+
+@if (!string.IsNullOrWhiteSpace(ErrorMessage))
+{
+    <Toast Show Style="right:unset;left:1rem;min-width:345px;background-color:red; color:white">
+        <span>@ErrorMessage</span>
+    </Toast>
+}
+
+<AlertDialog Show="@IsDeleting">
+    <Header>Delete @ModelName</Header>
+    <Content>You are about to delete a record. This action is irreversible. Are you sure? you can to continue with this action?</Content>
+    <Footer>
+        <div class="flex g8 jce">
+            <Button Text="Yes" Type="ButtonType.Destructive" OnClick="() => HandleDeleteConfirmed(ActiveModel!.Id.ToString())" />
+            <Button Text="No" Type="ButtonType.Ghost" OnClick="HandleDeleteCancelled" />
+        </div>
+    </Footer>
+</AlertDialog>
+
+@code
+{
+    protected override async Task OnInitializedAsync()
+    {
+        Title = "MCPServers";
+        Description = "Showing list of MCPServers";
+        Url = "/api/v1/MCPServers";
+
+        await LoadData();
+    }
+
+    protected override MCPDto[]? Sort(SortModel sortModel)
+    {
+        if (AllModels is null) return default;
+
+        return sortModel.Header.ToLower() switch
+        {
+			"Id" => AllModels.SortUpdate(p => p.Id, sortModel.IsAscending),
+			"Name" => AllModels.SortUpdate(p => p.Name, sortModel.IsAscending),
+			"Overview" => AllModels.SortUpdate(p => p.Overview, sortModel.IsAscending),
+			"OfficialVendor" => AllModels.SortUpdate(p => p.OfficialVendor, sortModel.IsAscending),
+            
+            _ => AllModels,
+        };
+    }
+
+    protected override IEnumerable<MCPDto>? SearchResults()
+        => AllModels.Search(SearchFor, x =>
+			x.Id.ToString().Match(SearchFor) ||
+			x.Name.ToString().Match(SearchFor) ||
+			x.Overview.ToString().Match(SearchFor) ||
+			x.OfficialVendor.ToString().Match(SearchFor)             
+        );
+}

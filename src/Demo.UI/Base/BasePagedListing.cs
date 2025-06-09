@@ -20,7 +20,7 @@ public abstract class BasePagedListing<TPage, TModel> : ComponentBase
     private BaseEndpoints Initialize()
     {
         Paging = new() { CurrentPage = 1, TotalRecords = 0, PageSize = 25 };
-        Sorting = new() { Header = "ID", IsAscending = true };
+        Sorting = new() { Header = " ", IsAscending = true };
         return new BaseEndpoints()
         {
             Create = $"{Url}",
@@ -75,8 +75,6 @@ public abstract class BasePagedListing<TPage, TModel> : ComponentBase
         await BrowserExtensions.SetFocus("#searchBox");
     }
 
-    protected abstract IEnumerable<TModel>? SearchResults();
-
     public async Task HandleSearch()
     {
         await HandlePaging();
@@ -84,7 +82,6 @@ public abstract class BasePagedListing<TPage, TModel> : ComponentBase
     }
 
     //Methods for sorting
-    protected abstract TModel[]? Sort(SortModel sortModel);
     public async Task HandleSorting(SortModel sortModel)
     {
         Sorting = sortModel;

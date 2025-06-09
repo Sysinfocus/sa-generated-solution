@@ -3,6 +3,13 @@
 @inject AuthenticationStateProvider asp
 @attribute [Authorize]
 
+<style>
+    .background { position: absolute; left: 0; top: 0; width: 100dvw; height: 100dvh;
+        background: linear-gradient(-30deg, #efd,#fde,#dfe); z-index: -1 }
+    .dark .background { background: linear-gradient(-30deg,navy,purple,black); }
+</style>
+<div class="background"></div>
+
 <div class="flex jcsb mb05" style="background-color: #333;color:white">
     <div class="flex jcsb aic w100" style="max-width:1400px;margin:auto;padding:0.5rem 1rem">
         <h4><a href="/Home">Demo</a></h4>

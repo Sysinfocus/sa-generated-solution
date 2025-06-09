@@ -43,13 +43,13 @@ public static class StartupSettings
                 </p>
             </body>
             """,
-            "text/html"));
-
-        app.UseHttpsRedirection();
+            "text/html"));        
 
         app.UseCors(c => c.AllowAnyOrigin()
             .AllowAnyMethod().AllowAnyHeader()
             .SetPreflightMaxAge(TimeSpan.FromMinutes(10)));
+
+        app.UseHttpsRedirection();
 
         app.UseAuthentication();
         app.UseAuthorization();

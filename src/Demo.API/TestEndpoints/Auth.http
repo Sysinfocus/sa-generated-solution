@@ -1,4 +1,4 @@
-@HostAddress = http://localhost:5215/api/v1/Auth
+@HostAddress = http://localhost:5150/api/v1/Auth
 @Authorization = Bearer 
 
 ###

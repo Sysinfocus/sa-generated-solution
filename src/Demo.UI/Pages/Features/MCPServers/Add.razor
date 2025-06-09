@@ -1,0 +1,70 @@
+@inherits BaseAdd<Add, MCPDto>
+
+<Sheet Show="@Show" OnClose="HandleClose">
+    <div class="flex-col jcsb h100">
+
+        <h4>Add @Title</h4>
+
+        <CascadingValue Value="Errors" IsFixed>
+            <div class="flex-col f1" style="margin-inline: -1.5rem; padding: 1.5rem; overflow: auto">
+                <Grid Class="aifs" MinColWidth="150px">
+                    <Input Id="focusElement" Label="Name" TItem="string" Class="mandatory" @bind-Value="@Model!.Name" Error="@nameof(Model.Name)" ContainerStyle="grid-column: span 2" />
+                    <Textarea Label="Overview" Class ="mandatory" @bind-Text="@Model.Overview" Rows="10" Error="@nameof(Model.Overview)" Style="grid-column: span 2" />
+                    <Group Label="Official Vendor" Error="@nameof(Model.OfficialVendor)"><Switch Label="@(Model.OfficialVendor ? "Yes" : "No")" Checked="@Model.OfficialVendor" OnClick="x => Model.OfficialVendor = x" /></Group>
+
+                </Grid>
+            </div>
+        </CascadingValue>
+        <div class="flex-col">
+            <BusyAnimation Show="@IsBusy" />
+            <div class="flex g8 jce aic">
+                <Button AccessKey="a" Text="Add" OnClick="HandleAdd" Disabled="@IsBusy" />
+                <Button AccessKey="c" Text="Cancel" Type="ButtonType.Ghost" OnClick="HandleClose" Disabled="@IsBusy" />
+            </div>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(ErrorMessage))
+    {
+        <Toast Show Style="right:unset;left:1rem;min-width:345px;background-color:red; color:white">
+            <span>@ErrorMessage</span>
+        </Toast>
+    }
+</Sheet>
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        Title = "MCP";
+    }
+
+    protected override async Task HandleAdd()
+    {
+        if (Model is null) return;
+        ErrorMessage = null;
+        Errors = Model.Errors();
+        if (!Model.IsValid) return;
+
+        IsBusy = true;
+        var apiResult = await ApiService.Post<MCPDto>(Endpoints.Create, Model);
+        if (apiResult.IsSuccess)
+        {
+            if (!RefreshRequired) RefreshRequired = true;
+            Model = new();
+            await browserExtensions.SetFocus("#focusElement");
+        }
+        else
+            ErrorMessage = apiResult.Message;
+
+        IsBusy = false;
+        if (!string.IsNullOrWhiteSpace(ErrorMessage))
+        {
+            await InvokeAsync(async () =>
+            {
+                StateHasChanged();
+                await Task.Delay(ApiService.TOAST_SHOW_SECONDS).ContinueWith(_ => ErrorMessage = null);
+            });
+        }
+    }
+}
