@@ -28,7 +28,8 @@ In order to add a feature, you have to create a DTO file in the Shared project's
 - It should be placed in the Shared project's `DTO` folder.
 - You can change and extend the example DTO given as per your required properties.
 - The comments shown in the example are actually used to render appropriate component, whether to show or ignore the property in the Add, Update or Listing operation, etc.,
-  
+- Once you create a feature, run migrate to initialize the database by executing `sa migrate Feature` where `Feature` is the name of the migration to create.
+- Once migration is successful, run update to update the database by executing `sa update`.  
 ```
 namespace Demo.Shared.DTO;
 public sealed class MCPDto : ModelValidator
