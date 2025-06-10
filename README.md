@@ -1,6 +1,11 @@
 # Sysinfocus Automation Tools
 A comprehensive scaffolder for .NET Minimal API and Blazor WebAssembly Standalone projects with incremental feature addition using DTOs from the shared project.
 
+## Known issues
+- Path issues in Mac OS / Linux
+- You need to run `dotnet sa` instead of just `sa` in Mac OS due to shell issues.
+- Migration and Update doesn't work as they are at the moment `.bat` files.
+
 ## Requirements
 - .NET 9.0
 - `dotnet-ef` tool install by executing `dotnet tool install -g dotnet-ef`
