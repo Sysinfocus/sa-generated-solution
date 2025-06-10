@@ -3,6 +3,7 @@ A comprehensive scaffolder for .NET Minimal API and Blazor WebAssembly Standalon
 
 ## Requirements
 - .NET 9.0
+- `dotnet-ef` tool install by executing `dotnet tool install -g dotnet-ef`
 - Git (as every action is committed, so you can revert back if something breaks)
 
 ## Install
