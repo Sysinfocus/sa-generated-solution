@@ -13,6 +13,9 @@ dotnet tool install -g Sysinfocus.Automation.CLI --prerelease
 
 ## Create a new solution
 Follow these steps to create a new solution:
+```
+sa new <name> <database>
+```
 - Change to the folder where you want to create a new solution. For eg: if I want to create a new solution in `C:\Projects` folder.
 - Once in `C:\Projects` folder, type and run `sa new Demo` to create a new solution with `Demo` namespace and `Sqlite` database.
 - You can create solution with other databases like `SqlServer / MySql / Oracle / PostgreSQL / MongoDB`. To create with any of these, type and run `sa new Demo oracle`. This will create `Demo` solution with `Oracle` database.
@@ -22,6 +25,9 @@ Follow these steps to create a new solution:
 
 ## Adding a feature
 In order to add a feature, you have to create a DTO file in the Shared project's DTO folder. Check example DTO below. You need to make sure the following:
+```
+sa add <name> <dto>
+```
 - The feature name and DTO name should be consistent. For eg: if feature name is `Comments`, DTO should be `CommentDto`.
 - The name of the DTO file show end with 'Dto'
 - The `namespace` should match as per your generated solutions' name.
@@ -46,6 +52,16 @@ public sealed class MCPDto : ModelValidator
         return errors.Count == 0 ? null : errors;
     }
 }
+```
+
+## Running migrations
+```
+sa migrate <name>
+```
+
+## Updating migrations
+```
+sa update
 ```
 
 ## Running projects
