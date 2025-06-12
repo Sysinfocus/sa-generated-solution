@@ -90,6 +90,7 @@ Watch video for the output of the generated solution.
   - Dashboard page
   - Sidebar
   - Login and Register pages (logo fixed in dark mode)
+- New Feature addition will update the existing UI project to have Dashboard, Sidebar and fixes for Login and Register page.
 
 ### 0.0.0.2-beta
 - Path issue fixed for Mac / Linux OS
