@@ -1,6 +1,8 @@
 # Sysinfocus Automation Tools
 A comprehensive scaffolder for .NET Minimal API and Blazor WebAssembly Standalone projects with incremental feature addition using DTOs from the shared project.
 
+Check out the UI library used in this project @ [Blazor.art](https://blazor.art)
+
 ## Known issues
 - You need to run `dotnet sa` instead of just `sa` in Mac OS due to command name conflict.
 - You may need to fix the execution path if it doesn't work with `dotnet sa`.
