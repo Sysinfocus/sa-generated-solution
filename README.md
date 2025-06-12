@@ -82,3 +82,23 @@ Watch video demonstrating the solution generation.
 Watch video for the output of the generated solution.
 
 [![Watch the video](https://img.youtube.com/vi/kJLhqg1zCmU/0.jpg)](https://www.youtube.com/watch?v=kJLhqg1zCmU)
+
+## Release Notes
+
+### 0.0.0.3-beta
+- New UI projects will have
+  - Dashboard page
+  - Sidebar
+  - Login and Register pages (logo fixed in dark mode)
+
+### 0.0.0.2-beta
+- Path issue fixed for Mac / Linux OS
+
+### 0.0.0.1-beta
+- Scaffolds
+  - .NET Minimal API project
+  - Data class project based on database selection
+  - Shared class project
+  - Blazor WebAssembly Standalone project
+- EF migrations
+- EF database update
